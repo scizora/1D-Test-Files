@@ -1,0 +1,25 @@
+// This file defines a 28-bit wide D flip-flop, which allows the clk oscillating at 50MHz 
+// to be used as a counter that ticks with a usable time (around 2^27/50,000,000 = 2.684 seconds).
+
+
+module stateCounter (
+    input clk,  //clock input
+    input rst,  //reset input
+    output inc_state
+ 
+  ) {
+  
+  //connecting the reset signal to the counter,providing a reset function to the counter.
+  dff stateCounter[28](.clk(clk),.rst(rst));
+  
+  always {
+    inc_state = stateCounter.q[27]; 
+    // connects the output, inc_state, to the MSB of stateCounter.q, 
+    //therefore at each rising edge inc_state is set to 1.
+    stateCounter.d = stateCounter.q + 1;
+    if (stateCounter.q[27]==1) {
+      stateCounter.d[27] = 0;
+    } 
+    
+  }
+}
